@@ -17,5 +17,12 @@ public class Main {
         for (double i:distances){
             System.out.println(i);
         }
+
+        Group group = new Group(points);
+        System.out.println(group);
+
+        group.delete(1);
+
+        System.out.println(group);
     }
 }
