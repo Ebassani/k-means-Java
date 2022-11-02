@@ -16,6 +16,11 @@ public class Group {
         this.centroid = centroid;
     }
 
+    public Group(Point centroid) {
+        this.points = new ArrayList<>();
+        this.centroid = centroid;
+    }
+
     public List<Point> getPoints() {
         return points;
     }
@@ -41,14 +46,14 @@ public class Group {
             int amountOfIndexes = points.get(0).amount();
             double[] newCentroid = new double[amountOfIndexes];
             for (int i = 0; i < amountOfIndexes; i++) {
-                int count = 0;
+                int count;
                 double num = 0;
                 for (count = 0; count<points.size(); count++) {
                     num += points.get(count).getPoints()[i];
                 }
                 newCentroid[i] = (num/count);
             }
-            this.centroid.setPoints(newCentroid);
+            this.centroid = new Point(newCentroid);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -58,11 +63,11 @@ public class Group {
 
     @Override
     public String toString() {
-        String group = "{";
+        StringBuilder group = new StringBuilder("{");
         for (Point p : points) {
-            group += p;
+            group.append(p);
         }
-        group += "}";
-        return group;
+        group.append("}");
+        return group.toString();
     }
 }

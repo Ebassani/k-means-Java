@@ -10,25 +10,31 @@ public class Main {
 
         Point[] points = {p1,p2,p3,p4};
 
-        Point[] centroids = Utilities.centroids(points,2);
-
-        double[] distances = Utilities.distances(centroid, points);
-
-        for (double i:distances){
-            System.out.println(i);
+        Group[] clusters = Utilities.clustering(2,points);
+        for (Group cluster: clusters){
+            System.out.println(cluster);
+            System.out.println(cluster.getCentroid());
         }
 
-        Group group = new Group(points, centroid);
-        Group group2 = new Group(points, centroid);
-        System.out.println(group);
-        System.out.println(group.getCentroid());
-        group.updateCentroid();
-        System.out.println(group.getCentroid());
-
-        group.delete(p1);
-        group.updateCentroid();
-        System.out.println(group.getCentroid());
-
-        System.out.println(group);
+//        Point[] centroids = Utilities.centroids(points,2);
+//
+//        double[] distances = Utilities.distances(centroid, points);
+//
+//        for (double i:distances){
+//            System.out.println(i);
+//        }
+//
+//        Group group = new Group(points, centroid);
+//        Group group2 = new Group(points, centroid);
+//        System.out.println(group);
+//        System.out.println(group.getCentroid());
+//        group.updateCentroid();
+//        System.out.println(group.getCentroid());
+//
+//        group.delete(p1);
+//        group.updateCentroid();
+//        System.out.println(group.getCentroid());
+//
+//        System.out.println(group);
     }
 }
