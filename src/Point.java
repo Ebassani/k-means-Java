@@ -16,6 +16,10 @@ public class Point {
         return this.points.length;
     }
 
+    public void setPoints(double[] newPoints) {
+        this.points = newPoints;
+    }
+
     @Override
     public String toString() {
         String array = "[";

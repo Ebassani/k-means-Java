@@ -3,14 +3,25 @@ import java.util.List;
 
 public class Group {
     private List<Point> points;
+    private Point centroid;
 
-    public Group(Point[] points) {
+    public Group(Point[] points, Point centroid) {
         List<Point> list = List.of(points);
         this.points = new ArrayList<>(list);
+        this.centroid = centroid;
     }
 
-    public Group(List<Point> points) {
+    public Group(List<Point> points, Point centroid) {
         this.points = points;
+        this.centroid = centroid;
+    }
+
+    public List<Point> getPoints() {
+        return points;
+    }
+
+    public Point getCentroid() {
+        return centroid;
     }
 
     public void delete(int index) {
@@ -21,10 +32,34 @@ public class Group {
         points.remove(point);
     }
 
+    public void addPoint(Point point) {
+        points.add(point);
+    }
+
+    public void updateCentroid() {
+        try {
+            int amountOfIndexes = points.get(0).amount();
+            double[] newCentroid = new double[amountOfIndexes];
+            for (int i = 0; i < amountOfIndexes; i++) {
+                int count = 0;
+                double num = 0;
+                for (count = 0; count<points.size(); count++) {
+                    num += points.get(count).getPoints()[i];
+                }
+                newCentroid[i] = (num/count);
+            }
+            this.centroid.setPoints(newCentroid);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @Override
     public String toString() {
         String group = "{";
-        for (Point p: points) {
+        for (Point p : points) {
             group += p;
         }
         group += "}";

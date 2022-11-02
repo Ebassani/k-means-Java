@@ -18,10 +18,16 @@ public class Main {
             System.out.println(i);
         }
 
-        Group group = new Group(points);
+        Group group = new Group(points, centroid);
+        Group group2 = new Group(points, centroid);
         System.out.println(group);
+        System.out.println(group.getCentroid());
+        group.updateCentroid();
+        System.out.println(group.getCentroid());
 
-        group.delete(1);
+        group.delete(p1);
+        group.updateCentroid();
+        System.out.println(group.getCentroid());
 
         System.out.println(group);
     }
