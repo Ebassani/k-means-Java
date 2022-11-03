@@ -106,4 +106,21 @@ public class Utilities {
         return clusters;
     }
 
+    static float[] sse(Point[] points) {
+        int max = points.length/2;
+        float[] sse = new float[max];
+        for (int i=0;i<max;i++) {
+            Cluster[] clusters = clustering(i+2, points);
+            float sumOfErrors = 0;
+
+            for (Cluster cluster: clusters){
+                sumOfErrors += cluster.avgDistance();
+            }
+
+            sse[i]=sumOfErrors;
+        }
+
+        return sse;
+    }
+
 }
