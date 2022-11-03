@@ -31,10 +31,16 @@ public class Utilities {
         return centroids;
     }
 
-    static double[] distances(Point centrid, Point[] points) {
+    /**
+     *
+     * @param centroid point of reference for the distances
+     * @param points points whose distance from the centroid will be calculated
+     * @return An array containig the distance between each point and the centroid
+     */
+    static double[] distances(Point centroid, Point[] points) {
         double[] distances = new double[points.length];
         for (int i = 0; i < points.length; i++) {
-            distances[i] = distance(points[i], centrid);
+            distances[i] = distance(points[i], centroid);
         }
         return distances;
     }
@@ -44,14 +50,14 @@ public class Utilities {
      * @param points initial point, no clustering yet
      * @return returns all the final clusters
      */
-    static Group[] clustering(int k, Point[] points) {
-        Group[] clusters = new Group[k];
+    static Cluster[] clustering(int k, Point[] points) {
+        Cluster[] clusters = new Cluster[k];
         Point[] initialCentroids = centroids(points, k);
 
-        clusters[0] = new Group(points, initialCentroids[0]);
+        clusters[0] = new Cluster(points, initialCentroids[0]);
 
         for (int i = 1; i < k; i++) {
-            clusters[i] = new Group(initialCentroids[i]);
+            clusters[i] = new Cluster(initialCentroids[i]);
         }
 
         clusters = updateCluster(clusters);
@@ -59,7 +65,12 @@ public class Utilities {
         return clusters;
     }
 
-    static Group[] updateCluster(Group[] clusters) {
+    /**
+     *
+     * @param clusters Array of clusters
+     * @return
+     */
+    static Cluster[] updateCluster(Cluster[] clusters) {
         boolean change = false;
         for (int currentGroup = 0; currentGroup < clusters.length; currentGroup++) {
             Point centroidGroup = clusters[currentGroup].getCentroid();
@@ -85,7 +96,7 @@ public class Utilities {
         }
 
         if (change) {
-            for (Group cluster: clusters) {
+            for (Cluster cluster : clusters) {
                 cluster.updateCentroid();
             }
 

@@ -1,22 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Group {
+public class Cluster {
     private List<Point> points;
     private Point centroid;
 
-    public Group(Point[] points, Point centroid) {
+    public Cluster(Point[] points, Point centroid) {
         List<Point> list = List.of(points);
         this.points = new ArrayList<>(list);
         this.centroid = centroid;
     }
 
-    public Group(List<Point> points, Point centroid) {
+    public Cluster(List<Point> points, Point centroid) {
         this.points = points;
         this.centroid = centroid;
     }
 
-    public Group(Point centroid) {
+    public Cluster(Point centroid) {
         this.points = new ArrayList<>();
         this.centroid = centroid;
     }
@@ -58,6 +58,14 @@ public class Group {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public double avgDistance() {
+        double sumDistances = 0;
+        for (Point point:points) {
+            sumDistances += Utilities.distance(point,centroid);
+        }
+        return sumDistances/ points.size();
     }
 
 
