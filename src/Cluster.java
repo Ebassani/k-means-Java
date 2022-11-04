@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cluster {
-    private List<Point> points;
+    private final List<Point> points;
     private Point centroid;
 
     public Cluster(Point[] points, Point centroid) {
@@ -60,12 +60,12 @@ public class Cluster {
         }
     }
 
-    public double avgDistance() {
+    public double distance() {
         double sumDistances = 0;
         for (Point point:points) {
-            sumDistances += Utilities.distance(point,centroid);
+            sumDistances += Kmeans.distance(point,centroid);
         }
-        return sumDistances/ points.size();
+        return sumDistances;
     }
 
 

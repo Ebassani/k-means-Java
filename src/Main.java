@@ -14,18 +14,20 @@ public class Main {
 
         Point[] points = {p1,p2,p3,p4,p5,p6,p7,p8,p9,p0};
 
-        float[] sse = Utilities.sse(points);
-        for (float num: sse){
-            System.out.println(num);
-        }
+//        float[] sse = Kmeans.sse(points);
+//        for (float num: sse){
+//            System.out.println(num);
+//        }
+//
+//
+//        Cluster[] clusters = Kmeans.clustering(2,points);
+//        for (Cluster cluster: clusters){
+//            System.out.println(cluster);
+//            System.out.println(cluster.getCentroid());
+//            System.out.println(cluster.distance());
+//        }
 
-
-        Cluster[] clusters = Utilities.clustering(2,points);
-        for (Cluster cluster: clusters){
-            System.out.println(cluster);
-            System.out.println(cluster.getCentroid());
-            System.out.println(cluster.avgDistance());
-        }
+        System.out.println(Kmeans.optimalK(points));
 
     }
 }

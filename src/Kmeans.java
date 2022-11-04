@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Utilities {
+public class Kmeans {
     static double distance(Point point1, Point point2) {
         double[] points1 = point1.getPoints();
         double[] points2 = point2.getPoints();
@@ -68,7 +68,7 @@ public class Utilities {
     /**
      *
      * @param clusters Array of clusters
-     * @return
+     * @return This method return the final clusters genarated
      */
     static Cluster[] updateCluster(Cluster[] clusters) {
         boolean change = false;
@@ -106,21 +106,55 @@ public class Utilities {
         return clusters;
     }
 
+    static float inertia(Cluster[] clusters) {
+        float sumOfErrors = 0;
+
+        for (Cluster cluster: clusters){
+            sumOfErrors += cluster.distance();
+        }
+
+        return sumOfErrors;
+    }
+
     static float[] sse(Point[] points) {
         int max = points.length/2;
+
         float[] sse = new float[max];
         for (int i=0;i<max;i++) {
-            Cluster[] clusters = clustering(i+2, points);
-            float sumOfErrors = 0;
+            Cluster[] clusters = clustering(i+1, points);
 
-            for (Cluster cluster: clusters){
-                sumOfErrors += cluster.avgDistance();
-            }
-
-            sse[i]=sumOfErrors;
+            sse[i] = inertia(clusters);
         }
 
         return sse;
+    }
+
+    static int optimalK(Point[] points) {
+        float[] sse = sse(points);
+
+        int x1 = 1;
+        double y1 = sse[0];
+
+        int x2 = sse.length;
+        double y2 = sse[sse.length-1];
+
+        double sseMin = 0;
+        int optimal = 0;
+
+        for (int i = 0; i< sse.length;i++) {
+
+            double distance =Math.abs((x2-x1) * (y1 - sse[i]) - (1-i) * (y2-y1)) /
+                    Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2));
+
+            if (distance> sseMin) {
+                sseMin = distance;
+                optimal = i+1;
+            }
+
+        }
+
+        return optimal;
+
     }
 
 }
