@@ -71,6 +71,11 @@ public class Kmeans {
      * @return This method return the final clusters genarated
      */
     static Cluster[] updateCluster(Cluster[] clusters) {
+
+        for (Cluster cluster : clusters) {
+            cluster.updateCentroid();
+        }
+
         boolean change = false;
         for (int currentGroup = 0; currentGroup < clusters.length; currentGroup++) {
             Point centroidGroup = clusters[currentGroup].getCentroid();
@@ -96,9 +101,7 @@ public class Kmeans {
         }
 
         if (change) {
-            for (Cluster cluster : clusters) {
-                cluster.updateCentroid();
-            }
+
 
             clusters = updateCluster(clusters);
         }
@@ -111,7 +114,11 @@ public class Kmeans {
 
         for (Cluster cluster: clusters){
             sumOfErrors += cluster.distance();
+//            System.out.println(cluster);
+//            System.out.println(cluster.getCentroid());
         }
+
+//        System.out.println("inertia " + clusters.length + ":" + sumOfErrors);
 
         return sumOfErrors;
     }

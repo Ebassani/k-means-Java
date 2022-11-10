@@ -20,14 +20,14 @@ public class Main {
 //        }
 //
 //
-//        Cluster[] clusters = Kmeans.clustering(2,points);
-//        for (Cluster cluster: clusters){
-//            System.out.println(cluster);
-//            System.out.println(cluster.getCentroid());
-//            System.out.println(cluster.distance());
-//        }
 
-        System.out.println(Kmeans.optimalK(points));
+        int optimal = Kmeans.optimalK(points);
+        System.out.println(optimal);
 
+        Cluster[] clusters = Kmeans.clustering(optimal,points);
+        for (Cluster cluster: clusters){
+            System.out.println(cluster);
+            System.out.println(cluster.getCentroid());
+        }
     }
 }

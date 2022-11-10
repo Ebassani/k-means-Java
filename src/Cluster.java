@@ -56,14 +56,17 @@ public class Cluster {
             this.centroid = new Point(newCentroid);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // This is only here because
         }
     }
 
     public double distance() {
         double sumDistances = 0;
         for (Point point:points) {
-            sumDistances += Kmeans.distance(point,centroid);
+            double dis = Kmeans.distance(point,centroid);
+            dis= Math.pow(dis, 2);
+//            System.out.println(dis);
+            sumDistances += dis;
         }
         return sumDistances;
     }
