@@ -52,7 +52,7 @@ public class Cluster {
             int count;
             double num = 0;
             for (count = 0; count<points.size(); count++) {
-                num += points.get(count).getPoints()[i];
+                num += points.get(count).getValues()[i];
             }
             newCentroid[i] = (num/count);
         }

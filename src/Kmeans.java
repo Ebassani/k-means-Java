@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class Kmeans {
     static double getDistance(Point point1, Point point2) {
-        double[] points1 = point1.getPoints();
-        double[] points2 = point2.getPoints();
+        double[] points1 = point1.getValues();
+        double[] points2 = point2.getValues();
         double distance = 0;
         for (int i = 0; i < point1.amount(); i++) {
             distance += Math.pow((points2[i] - points1[i]), 2);
@@ -61,9 +61,7 @@ public class Kmeans {
             clusters[i] = new Cluster(initialCentroids[i]);
         }
 
-        clusters = updateCluster(clusters);
-
-        return clusters;
+        return updateCluster(clusters);
     }
 
     /**
@@ -77,39 +75,38 @@ public class Kmeans {
             cluster.updateCentroid();
         }
 
-        boolean change = false;
+        boolean change;
 
-        for (Cluster currentGroup : clusters) {
-            Point centroidGroup = currentGroup.getCentroid();
+        do {
+            change = false;
+            for (Cluster currentGroup : clusters) {
+                Point centroidGroup = currentGroup.getCentroid();
 
-            for (Cluster groupToCompare : clusters) {
-                if (groupToCompare == currentGroup) {
-                    continue;
-                }
-
-                Point centroidToCompare = groupToCompare.getCentroid();
-
-                Point[] points = currentGroup.getPoints().toArray(new Point[0]);
-
-                double[] distancesFromGroupCentroid = getDistances(points, centroidGroup);
-                double[] distancesFromOtherCentroid = getDistances(points, centroidToCompare);
-
-                for (int i = 0; i < distancesFromGroupCentroid.length; i++) {
-                    if (distancesFromOtherCentroid[i] >= distancesFromGroupCentroid[i]) {
+                for (Cluster groupToCompare : clusters) {
+                    if (groupToCompare == currentGroup) {
                         continue;
                     }
 
-                    groupToCompare.addPoint(points[i]);
-                    currentGroup.delete(points[i]);
-                    change = true;
+                    Point centroidToCompare = groupToCompare.getCentroid();
 
+                    Point[] points = currentGroup.getPoints().toArray(new Point[0]);
+
+                    double[] distancesFromGroupCentroid = getDistances(points, centroidGroup);
+                    double[] distancesFromOtherCentroid = getDistances(points, centroidToCompare);
+
+                    for (int i = 0; i < distancesFromGroupCentroid.length; i++) {
+                        if (distancesFromOtherCentroid[i] >= distancesFromGroupCentroid[i]) {
+                            continue;
+                        }
+
+                        groupToCompare.addPoint(points[i]);
+                        currentGroup.delete(points[i]);
+                        change = true;
+
+                    }
                 }
             }
-        }
-
-        if (change) {
-            clusters = updateCluster(clusters);
-        }
+        } while (change);
 
         return clusters;
     }
@@ -124,11 +121,9 @@ public class Kmeans {
         return sumOfErrors;
     }
 
-    static float[] sse(Point[] points) {
-        int max = points.length/2;
-
-        float[] sse = new float[max];
-        for (int i=0;i<max;i++) {
+    static float[] sse(Point[] points, int maxK) {
+        float[] sse = new float[maxK];
+        for (int i=0;i<maxK;i++) {
             Cluster[] clusters = generateClusters(points, i+1);
 
             sse[i] = inertia(clusters);
@@ -137,8 +132,8 @@ public class Kmeans {
         return sse;
     }
 
-    static int optimalK(Point[] points) {
-        float[] sse = sse(points);
+    static int optimalK(Point[] points, int maxK) {
+        float[] sse = sse(points, maxK);
 
         int x1 = 1;
         double y1 = sse[0];
