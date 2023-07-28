@@ -42,31 +42,30 @@ public class Cluster {
     }
 
     public void updateCentroid() {
-        try {
-            int amountOfIndexes = points.get(0).amount();
-            double[] newCentroid = new double[amountOfIndexes];
-            for (int i = 0; i < amountOfIndexes; i++) {
-                int count;
-                double num = 0;
-                for (count = 0; count<points.size(); count++) {
-                    num += points.get(count).getPoints()[i];
-                }
-                newCentroid[i] = (num/count);
-            }
-            this.centroid = new Point(newCentroid);
-
-        } catch (Exception e) {
-            // This is only here because
+        if (points.isEmpty()) {
+            return;
         }
+
+        int amountOfIndexes = points.get(0).amount();
+        double[] newCentroid = new double[amountOfIndexes];
+        for (int i = 0; i < amountOfIndexes; i++) {
+            int count;
+            double num = 0;
+            for (count = 0; count<points.size(); count++) {
+                num += points.get(count).getPoints()[i];
+            }
+            newCentroid[i] = (num/count);
+        }
+        this.centroid = new Point(newCentroid);
+
     }
 
-    public double distance() {
+    public double distanceError() {
         double sumDistances = 0;
         for (Point point:points) {
-            double dis = Kmeans.distance(point,centroid);
-            dis= Math.pow(dis, 2);
-//            System.out.println(dis);
-            sumDistances += dis;
+            double distance = Kmeans.getDistance(point,centroid);
+            distance = Math.pow(distance, 2);
+            sumDistances += distance;
         }
         return sumDistances;
     }

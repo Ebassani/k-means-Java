@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Kmeans {
-    static double distance(Point point1, Point point2) {
+    static double getDistance(Point point1, Point point2) {
         double[] points1 = point1.getPoints();
         double[] points2 = point2.getPoints();
         double distance = 0;
@@ -15,14 +15,28 @@ public class Kmeans {
         return distance;
     }
 
-    static Point[] centroids(Point[] points, int amount) {
-        Point[] centroids = new Point[amount];
+    /**
+     *
+     * @param centroid point of reference for the distances
+     * @param points points whose distance from the centroid will be calculated
+     * @return An array containing the distance between each point and the centroid
+     */
+    static double[] getDistances(Point[] points, Point centroid) {
+        double[] distances = new double[points.length];
+        for (int i = 0; i < points.length; i++) {
+            distances[i] = getDistance(points[i], centroid);
+        }
+        return distances;
+    }
+
+    static Point[] centroids(Point[] points, int k) {
+        Point[] centroids = new Point[k];
 
         Random rand = new Random();
         List<Point> list = Arrays.asList(points);
         List<Point> givenList = new ArrayList<>(list);
 
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < k; i++) {
             int randomIndex = rand.nextInt(givenList.size());
             centroids[i] = givenList.get(randomIndex);
             givenList.remove(randomIndex);
@@ -31,26 +45,13 @@ public class Kmeans {
         return centroids;
     }
 
-    /**
-     *
-     * @param centroid point of reference for the distances
-     * @param points points whose distance from the centroid will be calculated
-     * @return An array containig the distance between each point and the centroid
-     */
-    static double[] distances(Point centroid, Point[] points) {
-        double[] distances = new double[points.length];
-        for (int i = 0; i < points.length; i++) {
-            distances[i] = distance(points[i], centroid);
-        }
-        return distances;
-    }
 
     /**
-     * @param k      should be at least 2
-     * @param points initial point, no clustering yet
-     * @return returns all the final clusters
+     * @param k      Number of cluster to be formed
+     * @param points All the points to be clustered
+     * @return       An array of Clusters (Cluster[]), each possessing its points and a centroid, final clusters of this iteration
      */
-    static Cluster[] clustering(int k, Point[] points) {
+    static Cluster[] generateClusters(Point[] points, int k) {
         Cluster[] clusters = new Cluster[k];
         Point[] initialCentroids = centroids(points, k);
 
@@ -68,7 +69,7 @@ public class Kmeans {
     /**
      *
      * @param clusters Array of clusters
-     * @return This method return the final clusters genarated
+     * @return         This method return the final clusters generated
      */
     static Cluster[] updateCluster(Cluster[] clusters) {
 
@@ -77,32 +78,36 @@ public class Kmeans {
         }
 
         boolean change = false;
-        for (int currentGroup = 0; currentGroup < clusters.length; currentGroup++) {
-            Point centroidGroup = clusters[currentGroup].getCentroid();
 
-            for (int groupToCompare = 0; groupToCompare < clusters.length; groupToCompare++) {
-                if (groupToCompare != currentGroup) {
-                    Point centroidDiff = clusters[groupToCompare].getCentroid();
+        for (Cluster currentGroup : clusters) {
+            Point centroidGroup = currentGroup.getCentroid();
 
-                    Point[] points = clusters[currentGroup].getPoints().toArray(new Point[0]);
+            for (Cluster groupToCompare : clusters) {
+                if (groupToCompare == currentGroup) {
+                    continue;
+                }
 
-                    double[] distancesfromgroupcentroid = distances(centroidGroup, points);
-                    double[] distancesfromothercentroid = distances(centroidDiff, points);
+                Point centroidToCompare = groupToCompare.getCentroid();
 
-                    for (int i = 0; i < distancesfromgroupcentroid.length; i++) {
-                        if (distancesfromothercentroid[i] < distancesfromgroupcentroid[i]) {
-                            clusters[groupToCompare].addPoint(points[i]);
-                            clusters[currentGroup].delete(points[i]);
-                            change = true;
-                        }
+                Point[] points = currentGroup.getPoints().toArray(new Point[0]);
+
+                double[] distancesFromGroupCentroid = getDistances(points, centroidGroup);
+                double[] distancesFromOtherCentroid = getDistances(points, centroidToCompare);
+
+                for (int i = 0; i < distancesFromGroupCentroid.length; i++) {
+                    if (distancesFromOtherCentroid[i] >= distancesFromGroupCentroid[i]) {
+                        continue;
                     }
+
+                    groupToCompare.addPoint(points[i]);
+                    currentGroup.delete(points[i]);
+                    change = true;
+
                 }
             }
         }
 
         if (change) {
-
-
             clusters = updateCluster(clusters);
         }
 
@@ -113,12 +118,8 @@ public class Kmeans {
         float sumOfErrors = 0;
 
         for (Cluster cluster: clusters){
-            sumOfErrors += cluster.distance();
-//            System.out.println(cluster);
-//            System.out.println(cluster.getCentroid());
+            sumOfErrors += (float) cluster.distanceError();
         }
-
-//        System.out.println("inertia " + clusters.length + ":" + sumOfErrors);
 
         return sumOfErrors;
     }
@@ -128,7 +129,7 @@ public class Kmeans {
 
         float[] sse = new float[max];
         for (int i=0;i<max;i++) {
-            Cluster[] clusters = clustering(i+1, points);
+            Cluster[] clusters = generateClusters(points, i+1);
 
             sse[i] = inertia(clusters);
         }
@@ -150,14 +151,15 @@ public class Kmeans {
 
         for (int i = 0; i< sse.length;i++) {
 
-            double distance =Math.abs((x2-x1) * (y1 - sse[i]) - (1-i) * (y2-y1)) /
+            double distance = Math.abs((x2-x1) * (y1 - sse[i]) - (1-i) * (y2-y1)) /
                     Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2));
 
-            if (distance> sseMin) {
-                sseMin = distance;
-                optimal = i+1;
+            if (distance <= sseMin) {
+                continue;
             }
 
+            sseMin = distance;
+            optimal = i+1;
         }
 
         return optimal;

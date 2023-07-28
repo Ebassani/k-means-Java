@@ -24,7 +24,7 @@ public class Main {
         int optimal = Kmeans.optimalK(points);
         System.out.println(optimal);
 
-        Cluster[] clusters = Kmeans.clustering(optimal,points);
+        Cluster[] clusters = Kmeans.generateClusters(points,optimal);
         for (Cluster cluster: clusters){
             System.out.println(cluster);
             System.out.println(cluster.getCentroid());
