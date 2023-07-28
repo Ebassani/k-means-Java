@@ -4,7 +4,7 @@ import java.awt.geom.*;
 
 public class Plot extends JPanel{
     private final Cluster[] clusters;
-    private final Color[] colors = {Color.RED, Color.BLUE, Color.YELLOW, Color.BLACK, Color.GREEN};
+    private final Color[] colors = {Color.RED, Color.BLUE, Color.YELLOW, Color.BLACK, Color.GREEN, Color.CYAN, Color.MAGENTA, Color.LIGHT_GRAY, Color.PINK};
 
     public Plot(Cluster[] clusters) {
         this.clusters = clusters;

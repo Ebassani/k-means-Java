@@ -48,13 +48,15 @@ public class Cluster {
 
         int amountOfIndexes = points.get(0).amount();
         double[] newCentroid = new double[amountOfIndexes];
+        int length = points.size();
         for (int i = 0; i < amountOfIndexes; i++) {
-            int count;
             double num = 0;
-            for (count = 0; count<points.size(); count++) {
-                num += points.get(count).getValues()[i];
+
+            for (Point point : this.points) {
+                num += point.getValues()[i];
             }
-            newCentroid[i] = (num/count);
+
+            newCentroid[i] = (num/length);
         }
         this.centroid = new Point(newCentroid);
 

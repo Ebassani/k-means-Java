@@ -71,21 +71,18 @@ public class Kmeans {
      */
     static Cluster[] updateCluster(Cluster[] clusters) {
 
-        for (Cluster cluster : clusters) {
-            cluster.updateCentroid();
-        }
-
         boolean change;
 
         do {
             change = false;
             for (Cluster currentGroup : clusters) {
-                Point centroidGroup = currentGroup.getCentroid();
 
                 for (Cluster groupToCompare : clusters) {
                     if (groupToCompare == currentGroup) {
                         continue;
                     }
+
+                    Point centroidGroup = currentGroup.getCentroid();
 
                     Point centroidToCompare = groupToCompare.getCentroid();
 
@@ -101,6 +98,8 @@ public class Kmeans {
 
                         groupToCompare.addPoint(points[i]);
                         currentGroup.delete(points[i]);
+                        groupToCompare.updateCentroid();
+                        currentGroup.updateCentroid();
                         change = true;
 
                     }
